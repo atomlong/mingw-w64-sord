@@ -5,8 +5,8 @@
 
 _pkgbase=sord
 pkgname=mingw-w64-sord
-pkgver=0.16.2
-pkgrel=3
+pkgver=0.16.8
+pkgrel=1
 pkgdesc="A lightweight C library for storing RDF data in memory"
 arch=('any')
 url="https://drobilla.net/software/sord/"
@@ -15,7 +15,7 @@ depends=('mingw-w64-serd' 'mingw-w64-pcre')
 makedepends=('mingw-w64-gcc' 'python')
 options=('!libtool' '!strip' '!buildflags' '!makeflags')
 source=("https://download.drobilla.net/${_pkgbase}-${pkgver}.tar.bz2"{,.sig})
-sha512sums=('fe143c07ed18c15ffaf2461ca587df76e365a075f5d93f5eaa4c26196e0b1dd59d24d16e176de3664a2658377a2934083af5742c80884e8e7dd201dcaccb9698'
+sha512sums=('24ed50de8e5bb321e557bac6d3e441b2ed49adabf828bf0e1b33a080c89306dde80443dc8b563098fcc184c4d6e53b7e716b523ddccdf56d08301d1b0120f2b2'
             'SKIP')
 validpgpkeys=('907D226E7E13FA337F014A083672782A9BF368F3') # David Robillard
 
@@ -35,6 +35,7 @@ build() {
     cp -r "${_pkgbase}-${pkgver}" build-${_arch}
     pushd build-${_arch}
 
+    export PKG_CONFIG_PATH="/usr/${_arch}/lib/pkgconfig"
     CC="$_arch-gcc" python waf configure --prefix=/usr/"$_arch" #\
                          #--test
     python waf build
@@ -60,7 +61,7 @@ package() {
       "$pkgdir/usr/$_arch/share/licenses/$_pkgbase/LICENSE"
     # docs
     install -t "$pkgdir/usr/$_arch/share/doc/${_pkgbase}" \
-      -vDm 644 {AUTHORS,NEWS,README}
+      -vDm 644 {AUTHORS,NEWS,README.md}
 
     # move DLL to bin directory
     install -d $pkgdir/usr/${_arch}/bin
